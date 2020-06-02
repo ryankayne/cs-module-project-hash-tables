@@ -35,6 +35,7 @@ class HashTable:
         Implement this.
         """
         # capacity = MIN_CAPACITY
+        # moved this to init 
         
 
 
@@ -125,7 +126,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        
 
 
 
