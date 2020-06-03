@@ -45,7 +45,23 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # I'm thinking the length of the list holding stored items divided by the capacity
+
+        # load_factor = self.capacity / len(self.storage)
+        # print(load_factor)
+        # print(self.capacity)
+        # print(len(self.storage))
+        NoneCount = 0
+        for x in self.storage:
+            if x is None:
+                NoneCount = NoneCount + 1
+                return NoneCount
+
+        load_factor = (len(self.storage) - NoneCount) / self.capacity
+        print(load_factor)
+        return load_factor
+
+
 
 
     # def fnv1(self, key):
@@ -125,9 +141,16 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
-        """
-        
+        """     
+        load = self.get_load_factor()
+        if load > 0.7:
+            self.capacity = self.capacity * 2
+            print(self.capacity)
+        self.put()
+        # index = self.hash_index(key)
+        # self.storage[index] = value
 
+        
 
 
 if __name__ == "__main__":
@@ -145,7 +168,7 @@ if __name__ == "__main__":
     ht.put("line_10", "Long time the manxome foe he sought--")
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
-
+    # ht.get_load_factor()
     print("")
 
     # Test storing beyond capacity
@@ -153,7 +176,7 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    old_capacity = ht.get_num_slots()
+    old_capacity = MIN_CAPACITY
     ht.resize(ht.capacity * 2)
     new_capacity = ht.get_num_slots()
 
