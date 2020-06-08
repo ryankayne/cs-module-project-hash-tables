@@ -1,5 +1,7 @@
+cache = {}
+
 def word_count(s):
-    # Your code here
+    text = s.split()
 
 
 

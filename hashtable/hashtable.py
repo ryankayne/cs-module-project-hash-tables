@@ -21,8 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.capacity = MIN_CAPACITY
+        self.capacity = capacity
         self.storage = [None] * self.capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -51,14 +52,16 @@ class HashTable:
         # print(load_factor)
         # print(self.capacity)
         # print(len(self.storage))
-        NoneCount = 0
-        for x in self.storage:
-            if x is None:
-                NoneCount = NoneCount + 1
-                return NoneCount
-
-        load_factor = (len(self.storage) - NoneCount) / self.capacity
-        print(load_factor)
+        # NoneCount = 0
+        # for x in self.storage:
+        #     if x is None:
+        #         NoneCount = NoneCount + 1
+        #         return NoneCount
+        # Ncount = (len(self.storage) - NoneCount)
+        # load_factor = Ncount / self.capacity
+        # print(load_factor) 
+        # return load_factor
+        load_factor = self.count / self.capacity
         return load_factor
 
 
@@ -108,8 +111,15 @@ class HashTable:
 
         Implement this.
         """
+        self.count += 1
+        random = HashTableEntry(key, value)
         index = self.hash_index(key)
-        self.storage[index] = value
+        if self.storage[index] is None:
+            self.storage[index] = random
+        else:
+            random.next = self.storage[index]
+            self.storage[index] = random
+            
 
     def delete(self, key):
         """
@@ -119,8 +129,17 @@ class HashTable:
 
         Implement this.
         """
+        self.count += 1
+        random = HashTableEntry(key)
         index = self.hash_index(key)
-        self.storage[index] = None
+        if self.storage[index] is None:
+            self.storage[index] = random
+        else:
+            random.next = self.storage[index]
+            self.storage[index] = None
+
+        # index = self.hash_index(key)
+        # self.storage[index] = None
 
 
     def get(self, key):
@@ -131,8 +150,22 @@ class HashTable:
 
         Implement this.
         """
-        index = self.hash_index(key)
-        return self.storage[index]
+        
+    # def get(key):
+    #     slot = get_slot(key)
+    #     hash_entry = data[slot]
+    # ​
+    #     if hash_entry is not None:
+    #         return hash_entry.value
+    # ​
+    #     return None
+
+
+        # index = self.hash_index(key)
+        # data = self.storage[index]
+
+        # while data is not None:
+            
 
 
     def resize(self, new_capacity):
@@ -142,11 +175,23 @@ class HashTable:
 
         Implement this.
         """     
-        load = self.get_load_factor()
-        if load > 0.7:
-            self.capacity = self.capacity * 2
-            print(self.capacity)
-        self.put()
+        copy = self.storage
+        self.storage = [None] * new_capacity
+        self.capacity = new_capacity
+        for x in copy:
+            if x is not None:
+                current = x
+                while current:
+                    self.put(current.key, current.value)
+                    current = current.next
+
+
+        # load = self.get_load_factor()
+        # if load > 0.7:
+        #     self.capacity = self.capacity * 2
+        #     print(self.capacity)
+        
+        # self.put()
         # index = self.hash_index(key)
         # self.storage[index] = value
 
