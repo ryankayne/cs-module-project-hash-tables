@@ -21,8 +21,9 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
-
+        self.capacity = capacity
+        self.storage = [None] * self.capacity
+        self.count = 0
 
     def get_num_slots(self):
         """
@@ -34,7 +35,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # capacity = MIN_CAPACITY
+        # moved this to init 
+        
 
 
     def get_load_factor(self):
@@ -43,17 +46,41 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        # I'm thinking the length of the list holding stored items divided by the capacity
+
+        # load_factor = self.capacity / len(self.storage)
+        # print(load_factor)
+        # print(self.capacity)
+        # print(len(self.storage))
+        # NoneCount = 0
+        # for x in self.storage:
+        #     if x is None:
+        #         NoneCount = NoneCount + 1
+        #         return NoneCount
+        # Ncount = (len(self.storage) - NoneCount)
+        # load_factor = Ncount / self.capacity
+        # print(load_factor) 
+        # return load_factor
+        load_factor = self.count / self.capacity
+        return load_factor
 
 
-    def fnv1(self, key):
-        """
-        FNV-1 Hash, 64-bit
 
-        Implement this, and/or DJB2.
-        """
 
-        # Your code here
+    # def fnv1(self, key):
+    #     """
+    #     FNV-1 Hash, 64-bit
+
+    #     Implement this, and/or DJB2.
+    #     """
+
+    #     prime = 1099511628211
+    #     hash = 14695981039346656037
+
+    #     for x in key:           
+    #         hash = hash * prime
+    #         hash = hash ^ ord(x)
+    #     return hash
 
 
     def djb2(self, key):
@@ -62,7 +89,10 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        for x in key:
+            hash = (( hash << 5) + hash) + ord(x)
+        return hash & 0xFFFFFFFF
 
 
     def hash_index(self, key):
@@ -70,7 +100,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        # return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
 
     def put(self, key, value):
@@ -81,8 +111,15 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
-
+        self.count += 1
+        random = HashTableEntry(key, value)
+        index = self.hash_index(key)
+        if self.storage[index] is None:
+            self.storage[index] = random
+        else:
+            random.next = self.storage[index]
+            self.storage[index] = random
+            
 
     def delete(self, key):
         """
@@ -92,7 +129,17 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        self.count += 1
+        random = HashTableEntry(key)
+        index = self.hash_index(key)
+        if self.storage[index] is None:
+            self.storage[index] = random
+        else:
+            random.next = self.storage[index]
+            self.storage[index] = None
+
+        # index = self.hash_index(key)
+        # self.storage[index] = None
 
 
     def get(self, key):
@@ -103,7 +150,22 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        
+    # def get(key):
+    #     slot = get_slot(key)
+    #     hash_entry = data[slot]
+    # ​
+    #     if hash_entry is not None:
+    #         return hash_entry.value
+    # ​
+    #     return None
+
+
+        # index = self.hash_index(key)
+        # data = self.storage[index]
+
+        # while data is not None:
+            
 
 
     def resize(self, new_capacity):
@@ -112,9 +174,28 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
-        """
-        # Your code here
+        """     
+        copy = self.storage
+        self.storage = [None] * new_capacity
+        self.capacity = new_capacity
+        for x in copy:
+            if x is not None:
+                current = x
+                while current:
+                    self.put(current.key, current.value)
+                    current = current.next
 
+
+        # load = self.get_load_factor()
+        # if load > 0.7:
+        #     self.capacity = self.capacity * 2
+        #     print(self.capacity)
+        
+        # self.put()
+        # index = self.hash_index(key)
+        # self.storage[index] = value
+
+        
 
 
 if __name__ == "__main__":
@@ -132,7 +213,7 @@ if __name__ == "__main__":
     ht.put("line_10", "Long time the manxome foe he sought--")
     ht.put("line_11", "So rested he by the Tumtum tree")
     ht.put("line_12", "And stood awhile in thought.")
-
+    # ht.get_load_factor()
     print("")
 
     # Test storing beyond capacity
@@ -140,7 +221,7 @@ if __name__ == "__main__":
         print(ht.get(f"line_{i}"))
 
     # Test resizing
-    old_capacity = ht.get_num_slots()
+    old_capacity = MIN_CAPACITY
     ht.resize(ht.capacity * 2)
     new_capacity = ht.get_num_slots()
 

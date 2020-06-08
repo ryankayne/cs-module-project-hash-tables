@@ -1,6 +1,19 @@
 def no_dups(s):
-    # Your code here
+    d = {}
+    result = []
 
+    for x in s.split():
+        if x not in d:
+            d[x] = 1
+        if x in d:
+            pass
+    for x in d:
+        result.append(x)
+        # print(x)
+    lts = ' '.join([str(elem) for elem in result])
+    return lts
+
+# https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
 
 
 if __name__ == "__main__":
